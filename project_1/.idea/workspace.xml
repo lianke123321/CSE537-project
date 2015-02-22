@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f2607874-eea9-42cf-83b2-abc12f144b89" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Adrian.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/peg_solitaire_sol.py" afterPath="$PROJECT_DIR$/peg_solitaire_sol.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="project_1.iws" />
@@ -21,7 +19,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/project_1$peg_solitaire_sol.coverage" NAME="peg_solitaire_sol Coverage Results" MODIFIED="1424555802668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/project_1$project_1.coverage" NAME="project_1 Coverage Results" MODIFIED="1424115886699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/project_1$peg_solitaire_sol__1_.coverage" NAME="peg_solitaire_sol (1) Coverage Results" MODIFIED="1424592934849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/project_1$peg_solitaire_sol__1_.coverage" NAME="peg_solitaire_sol (1) Coverage Results" MODIFIED="1424633412975" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -48,8 +46,8 @@
       <file leaf-file-name="peg_solitaire_sol.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/peg_solitaire_sol.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8333333" vertical-offset="1672" max-vertical-offset="2394">
-              <caret line="118" column="18" selection-start-line="118" selection-start-column="18" selection-end-line="118" selection-end-column="18" />
+            <state vertical-scroll-proportion="0.7777778" vertical-offset="1767" max-vertical-offset="2470">
+              <caret line="121" column="22" selection-start-line="121" selection-start-column="22" selection-end-line="121" selection-end-column="22" />
               <folding>
                 <element signature="e#41#76#0" expanded="true" />
               </folding>
@@ -420,7 +418,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1066" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291536" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -508,8 +506,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/peg_solitaire_sol.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8333333" vertical-offset="1672" max-vertical-offset="2394">
-          <caret line="118" column="18" selection-start-line="118" selection-start-column="18" selection-end-line="118" selection-end-column="18" />
+        <state vertical-scroll-proportion="0.7777778" vertical-offset="1767" max-vertical-offset="2470">
+          <caret line="121" column="22" selection-start-line="121" selection-start-column="22" selection-end-line="121" selection-end-column="22" />
           <folding>
             <element signature="e#41#76#0" expanded="true" />
           </folding>
