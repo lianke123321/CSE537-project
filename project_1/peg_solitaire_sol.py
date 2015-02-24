@@ -89,10 +89,10 @@ def check_finish(board):
 def cut_edge(node):
     count = 0
     for i in range(0, len(node.children)):
-        if (len(get_next_move(node.children[i].data)) == 0) and (node.children[i].data[3][3] != 'x'):
+        if (len(get_next_move(node.children[i].data)) == 0) and (not check_finish(node.children[i].data)):
             node.children[i].dead = True
             count += 1
-    print ('Cut %d edge(s)!' % count)
+    # print ('Cut %d edge(s)!' % count)
 
 
 def iddfs(node, depth):
@@ -122,13 +122,18 @@ def iddfs(node, depth):
             return False, node.move
 
 
+def heuristic_0(node, opt):
+    h = 100 - len(get_next_move(node.data))
+    return h
+
+
 def heuristic_1(node, opt):
     h = 0
     for i in range(0, size):
         for k in range(0, size):
             if node.data[i][k] != opt[i][k]:
                 h += 1
-    print 'Heuristic 1 result: ', h
+    # print 'Heuristic 1 result: ', h
     return h
 
 
@@ -138,12 +143,13 @@ def heuristic_2(node, opt):
         for k in range(0, size):
             if node.data[i][k] == 'x':
                 h += (abs(i-3) + abs(k-3))
-    print 'Heuristic 2 result: ', h
+    # print 'Heuristic 2 result: ', h
     return h
 
 
 def a_star_search(node, opt, depth):
     if check_finish(node.data):
+        print node.move
         return True
     else:
         next_move = get_next_move(node.data)
@@ -155,50 +161,55 @@ def a_star_search(node, opt, depth):
                 node.children[i].data[move[0][0]][move[0][1]] = '0'
                 node.children[i].data[move[1][0]][move[1][1]] = 'x'
                 node.children[i].data[(move[0][0] + move[1][0]) / 2][(move[0][1] + move[1][1]) / 2] = '0'
-                node.children[i].h = heuristic_2(node.children[i], opt)
-                draw_board(node.children[i].data)
-                print 'Child ' + str(i) + ' initialized!'
+                node.children[i].h = heuristic_0(node.children[i], opt) + heuristic_2(node.children[i], opt)
+                # draw_board(node.children[i].data)
+                # print 'Child ' + str(i) + ' initialized!'
                 i += 1
 
-            print 'Number of children: ', len(node.children)
+            # print 'Number of children: ', len(node.children)
             cut_edge(node)
 
             while True:
-                tmp_cost = 100
+                tmp_cost = 1000
                 chosen = 0
+                has_valid_child = False
                 for i in range(0, len(node.children)):
                     # print ("%d: %d" % (i, node.children[i].h))
                     # print ("Child %d is dead? %r" % (i, node.children[i].dead))
                     if not node.children[i].dead:
+                        has_valid_child = True
                         if node.children[i].h <= tmp_cost:
                             chosen = i
                             tmp_cost = node.children[i].h
-
-                print 'Choosing: child ', chosen
-                draw_board(node.children[chosen].data)
-                result = a_star_search(node.children[chosen], opt, depth)
-                if not result:
-                    # print 'Dead end! Number of children before delete: ', len(node.children)
-                    # del node.children[chosen]
-                    # print 'Dead end! Number of children: ', len(node.children)
-                    node.children[chosen].dead = True
-                    if len(node.children) == 0:
-                        return False
+                if has_valid_child:
+                    # print 'Choosing: child ', chosen
+                    # draw_board(node.children[chosen].data)
+                    result = a_star_search(node.children[chosen], opt, depth)
+                    if not result:
+                        # print 'Dead end! Number of children before delete: ', len(node.children)
+                        # del node.children[chosen]
+                        # print 'Dead end! Number of children: ', len(node.children)
+                        node.children[chosen].dead = True
+                        if len(node.children) == 0:
+                            return False
+                    else:
+                        print node.move
+                        return result
                 else:
-                    return result
+                    return False
 
         else:
             node.dead = True
-            print 'No next move, return false!'
+            # print 'No next move, return false!'
             return False
 
 
 def main():
     board, opt = init()
     # draw_board(opt)
-    root = Tree(board, None, None, 0)
+    root = Tree(board, None, 'origin', 0)
     depth = 0
-    '''
+
     while True:
         result, move_seq = iddfs(root, depth)
         if result:
@@ -208,9 +219,12 @@ def main():
 
     print '\nBelow is memory usage for Iterative Deepening Search:\n'
     print hpy().heap()
-    '''
+
     print '\nNow we do A* search using heuristic 1'
     print a_star_search(root, opt, 0)
+
+    print '\nBelow is memory usage for A* Search using heuristic 1:\n'
+    print hpy().heap()
 
 
 main()
