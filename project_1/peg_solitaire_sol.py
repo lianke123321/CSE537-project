@@ -23,16 +23,16 @@ class Tree(object):
         self.parent = parent
         self.children = {}
         self.move = move
-        self.dead = False
+        self.dead = False   # this label is used to mark this node is dead
         self.g = g
-        self.h = 1000
+        self.h = 1000   # initialize h to be a large integer
 
 
 def init():
     """
     This function is used to initialize game board configuration
     and goal state.
-    :return:
+    :return: initialized board and final board
     """
     l = lambda: defaultdict(l)
     board = l()
@@ -43,12 +43,12 @@ def init():
                 board[i][k] = '-'
                 opt[i][k] = '-'
             else:
-                board[i][k] = 'x'
-                # board[i][k] = '0'
+                # board[i][k] = 'x'
+                board[i][k] = '0'
                 opt[i][k] = '0'
 
-    # board[1][3] = board[2][2] = board[2][3] = board[2][4] = board[3][3] = board[4][3] = 'x'
-    board[3][3] = '0'
+    board[1][3] = board[2][2] = board[2][3] = board[2][4] = board[3][3] = board[4][3] = 'x'
+    # board[3][3] = '0'
     opt[3][3] = 'x'
     print 'Initial board configuration:'
     draw_board(board)
@@ -60,7 +60,7 @@ def draw_board(board):
     """
     Draw current board.
     :param board:
-    :return:
+    :return: null
     """
     for i in range(0, size):
         for k in range(0, size):
@@ -73,7 +73,7 @@ def get_next_move(board):
     """
     Generate and return all possible next moves
     :param board:
-    :return:
+    :return: list of all possible next moves
     """
     # print 'Calculating next move!'
     next_move = []
@@ -97,7 +97,7 @@ def check_finish(board):
     """
     Check if current state is final state. Return true or false
     :param board:
-    :return:
+    :return: true or false
     """
     if board[3][3] == 'x':
         for i in range(0, size):
@@ -117,7 +117,7 @@ def cut_edge(node):
     """
     Prune edges by labeling all nodes with no next move as dead
     :param node:
-    :return:
+    :return: null
     """
     count = 0
     for i in range(0, len(node.children)):
@@ -134,9 +134,9 @@ def iddfs(node, depth, expanded_nodes):
     :param node:
     :param depth:
     :param expanded_nodes:
-    :return:
+    :return: true or false
     """
-    expanded_nodes.append(node)
+    expanded_nodes.append(node)     # add new node to expanded nodes list
     if depth == 0:
         if check_finish(node.data):
             return True, node.move
@@ -181,7 +181,7 @@ def heuristic_1(node, opt):
     more number of next moves
     :param node:
     :param opt:
-    :return:
+    :return: calculated h value
     """
     h = 100 - len(get_next_move(node.data))
     return h
@@ -193,7 +193,7 @@ def heuristic_2(node, opt):
     Prefer node with smaller distance.
     :param node:
     :param opt:
-    :return:
+    :return: calculated h value
     """
     h = 0
     for i in range(0, size):
@@ -210,7 +210,7 @@ def heuristic_3(node, opt):
     normal peg solitaire (much more difficult than this homework)
     :param node:
     :param opt:
-    :return:
+    :return: calculated h balue
     """
     h = heuristic_1(node, opt) + heuristic_2(node, opt)
     return h
@@ -224,7 +224,7 @@ def a_star_search(heuristic, node, opt, depth, expanded_nodes):
     :param opt:
     :param depth:
     :param expanded_nodes:
-    :return:
+    :return: true or false
     """
     expanded_nodes.append(node)
     if check_finish(node.data):
@@ -258,7 +258,7 @@ def a_star_search(heuristic, node, opt, depth, expanded_nodes):
                     # print ("Child %d is dead? %r" % (i, node.children[i].dead))
                     if not node.children[i].dead:
                         has_valid_child = True
-                        if node.children[i].h <= tmp_cost:
+                        if node.children[i].h <= tmp_cost:     # here only use h value since g values are always the same
                             chosen = i
                             tmp_cost = node.children[i].h
                 if has_valid_child:
