@@ -48,6 +48,7 @@ from util import nearestPoint
 from util import manhattanDistance
 import util, layout
 import sys, types, time, random, os
+from guppy import hpy
 
 ###################################################
 # YOUR INTERFACE TO THE PACMAN WORLD: A GameState #
@@ -628,10 +629,12 @@ def replayGame( layout, actions, display ):
 
 def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0, catchExceptions=False, timeout=30 ):
     import __main__
+    import time
     __main__.__dict__['_display'] = display
 
     rules = ClassicGameRules(timeout)
     games = []
+    start_time = time.time()
 
     for i in range( numGames ):
         beQuiet = i < numTraining
@@ -663,6 +666,10 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
         print 'Scores:       ', ', '.join([str(score) for score in scores])
         print 'Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate)
         print 'Record:       ', ', '.join([ ['Loss', 'Win'][int(w)] for w in wins])
+
+        print "\nRunning time: ", time.time() - start_time
+        print "\nMemory usage below:\n"
+        print hpy().heap()
 
     return games
 

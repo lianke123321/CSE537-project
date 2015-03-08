@@ -75,7 +75,31 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        score = successorGameState.getScore()   # initialize score
+        if successorGameState.isWin():
+            return 10000    # return a big num if this move will lead to win
+        ghostPositions = currentGameState.getGhostPositions()    # get all positions of ghosts
+        #print ghostPositions
+        for ghostPos in ghostPositions:
+            distFromGhost = util.manhattanDistance(newPos, ghostPos)
+            if distFromGhost <= 1:
+                return -10000   # return a big negative num if ghost is too close
+
+        foods = newFood.asList()
+        foodDists = []
+        for foodPos in foods:
+            foodDists.append(util.manhattanDistance(newPos, foodPos))
+        #print min(foodDists)
+        score -= min(foodDists)
+
+        if(currentGameState.getNumFood()) > successorGameState.getNumFood():
+            score += 50 # encourage eating food
+
+        if action == Directions.STOP:
+            score -= 10 # stop not preferred
+
+        return score
+        #return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -130,7 +154,45 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def minValue(gameState, depth, agentIndex, numGhosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                #print "minValue reached bottom, returning ", self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState)   # last ply simply return
+            value = 10000   # to find min
+            legalActions = gameState.getLegalActions(agentIndex)    # get all children
+            if agentIndex == numGhosts:
+                for action in legalActions:
+                    value = min(value, maxValue(gameState.generateSuccessor(agentIndex, action), depth - 1, numGhosts))
+            else:
+                for action in legalActions:
+                    value = min(value, minValue(gameState.generateSuccessor(agentIndex, action), depth, agentIndex + 1, numGhosts))
+            #print "minValue normal return, returning ", value
+            return value
+
+        def maxValue(gameState, depth, numghosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                #print "maxValue reached bottom, returning ", self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState)   # last ply simply return
+            value = -10000  # to find max
+            legalActions = gameState.getLegalActions(0) # always pacman move, with index 0
+            for action in legalActions:
+                value = max(value, minValue(gameState.generateSuccessor(0, action), depth - 1, 1, numghosts))
+            #print "maxValue normal return, returning ", value
+            return value
+
+        legalActions = gameState.getLegalActions()
+        numGhosts = gameState.getNumAgents() - 1
+        chosen = Directions.STOP
+        score = -10000  # find max so initializing score as a big negative num
+        for action in legalActions:
+            nextState = gameState.generateSuccessor(0, action)
+            tmpScore = score
+            # calculate the min value of each child then choose the max one
+            score = max(score, minValue(nextState, self.depth, 1, numGhosts))
+            if score > tmpScore:
+                chosen = action
+        return chosen
+        # util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -142,7 +204,72 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def minValue(gameState, alpha, beta, agentIndex, depth, numGhosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                #print "minValue reached bottom, returning ", self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState)   # last ply simply return
+            value = 10000   # only care about minimum value
+            legalActions = gameState.getLegalActions(agentIndex)
+            if agentIndex == numGhosts:
+                for action in legalActions:
+                    value = min(value, maxValue(gameState.generateSuccessor(agentIndex, action),\
+                                                alpha, beta, depth-1, numGhosts))
+                    # critical step here, cause we will choose min, so final value must be
+                    # smaller than this value, but parent is choosing a max, so if this
+                    # value is smaller than current max (alpha), this child is useless,
+                    # directly return w/o searching other children
+                    if value <= alpha:
+                        #print "minValue cut edge, returning ", value
+                        return value
+                    if value < beta:
+                        beta = value    # update current min
+            else:
+                for action in legalActions:
+                    value = min(value, minValue(gameState.generateSuccessor(agentIndex, action),\
+                                                alpha, beta, agentIndex+1, depth, numGhosts))
+                    if value <= alpha:
+                        #print "minValue cut edge, returning ", value
+                        return value
+                    if value < beta:
+                        beta = value
+            #print "minValue normal return, returning ", value
+            return value
+
+        def maxValue(gameState, alpha, beta, depth, numGhosts):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                #print "maxValue reached bottom, returning ", self.evaluationFunction(gameState)
+                return self.evaluationFunction(gameState)   # last ply simply return
+            value = -10000  # only care about minimum value
+            legalActions = gameState.getLegalActions(0)
+            for action in legalActions:
+                value = max(value, minValue(gameState.generateSuccessor(0, action),\
+                                            alpha, beta, 1, depth-1, numGhosts))
+                if value >= beta:   # same explanation as in minValue
+                    #print "maxValue cut edge, returning ", value
+                    return value
+                if value > alpha:   # update current max
+                    alpha = value
+            #print "maxValue normal return, returning ", value
+            return value
+
+        legalActions = gameState.getLegalActions() # as usual, get all possible moves
+        numGhosts = gameState.getNumAgents() - 1
+        chosen = Directions.STOP
+        score = -10000  # same with minimax
+        alpha = -10000  # used to represent current max
+        beta = 10000    # used to represent current min
+        for action in legalActions:
+            nextState = gameState.generateSuccessor(0, action)
+            tmpScore = score
+            score = max(score, minValue(nextState, alpha, beta, 1, self.depth, numGhosts))
+            if score > tmpScore:
+                chosen = action
+            if score >= beta:   # same explanation as in minValue
+                return chosen
+            if score > alpha:
+                alpha = score   # alpha is current max, if we found a larger score then use it to update alpha
+        return chosen
+        #util.raiseNotDefined()
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
