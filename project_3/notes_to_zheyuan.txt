@@ -1,0 +1,7 @@
+1. dataset_AI_CSP是原始的dataset，这个dataset有很多问题，格式不规范，等等。我改正了一下（按照文档里的格式要求）存在dataset文件里，程序读的也是这个文件。我改的地方有：
+	去掉了每个table的注释和举的例子
+	补上缺少的逗号，或者去掉末尾多出来的逗号
+	修正了胡乱换行（一个course或ta应该是一行）
+2. 这个dataset还需要修改，比如所有TA都只会那几个skills，但是很多课程要求乱七八糟的skills一个TA都不会，这些skills根本就是无用的可以删掉
+3. 你可能还需要添加更多的attributes到我定义的course和ta class里来存图的信息，还有ta assignment的信息，或者直接定义新的class，随便你
+4. 现在程序读一个参数作为文件名，比如：$ python csp_sol.py dataset
