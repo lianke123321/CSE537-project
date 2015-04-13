@@ -1,0 +1,10 @@
+% this defines a basic relationship member
+member(X,[X|R]).
+member(X,[Y|R]):- member(X,R).
+
+% if chose 'Direction' at 'Node' we could reach goal, then dfs from this node is true
+% used to construct the first state
+dfs(Node, Visited, [Node], [Direction]):- goal(Node, Direction).
+
+% recursively define how to find the next step, 
+dfs(Start, Visited, [Start|Rest], [StartDir|RestDir]):- connected(Start, Next, StartDir), not member(Next, Visited), dfs(Next, [Start|Visited], Rest, RestDir).

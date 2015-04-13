@@ -1,0 +1,27 @@
+% define some characteristics of append
+% first one means that if append an empty list to L, then the L remains the same
+append([],L,L).
+% second one means that if we add something to the appending list, the result list
+% would add the same thing. This is what this word 'append' means!
+append([X|L1],L2,[X|L3]) :- append(L1,L2,L3).
+
+% same as dfs.P
+member(X,[X|R]).
+member(X,[Y|R]):- member(X,R).
+
+% find all solutions [Next, Direction, Cell|Path] that satisfy constraint:
+%   connected(Cell, Next, Direction)
+% Then put all solutions into list NewPaths
+successors([Cell|Path], NewPaths):- setof([Next, Direction, Cell|Path], connected(Cell, Next, Direction), NewPaths), !.
+% The initial successors, any path is a successor of empty list
+successors(Path, []).
+
+% this will find a path in the tree with Start as the starting point
+solve(Start, Solution) :- bfs([[Start]], Solution).
+
+% root of the tree
+bfs([[Cell|Path]|_], [Cell|Path]) :- goal(Cell,_).
+% Construct the tree level by level
+% Paths + NewPaths = AllPaths
+% In each iteration, we find a collection Path, and each element constructs a child
+bfs([Path|Paths], Solution) :- successors(Path, NewPaths), append(Paths, NewPaths, AllPaths), bfs(AllPaths, Solution).

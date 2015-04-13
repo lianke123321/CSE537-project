@@ -144,15 +144,80 @@ class PositionSearchProblem(search.SearchProblem):
     goal: A position in the gameState
     """
     self.walls = gameState.getWalls()
+    #print 'all walls:\n', self.walls
+    #print self.walls[5][5]
     self.startState = gameState.getPacmanPosition()
     if start != None: self.startState = start
+    #print 'start:\n', self.startState
     self.goal = goal
+    #print 'goal:\n', self.goal
+    
     self.costFn = costFn
     if warn and (gameState.getNumFood() != 1 or not gameState.hasFood(*goal)):
       print 'Warning: this does not look like a regular search maze'
 
     # For display purposes
     self._visited, self._visitedlist, self._expanded = {}, [], 0
+    
+    # initializing maze.P here
+    #print self.walls.height, self.walls.width
+    '''
+    for a in range(0, self.walls.height-1):
+        for b in range(0, self.walls.width-1):
+            if self.walls[a][b] == False:
+                print 'found a space'
+    '''
+    w = self.walls.width -1
+    h = self.walls.height -1
+    # print 'w:', w, 'h:', h
+    
+    #print self.getSuccessors(self.startState)
+    state_queue= util.Queue();
+    visited = set()
+    parents = dict()
+    direction = dict()
+    path = list()
+    state_queue.push(self.getStartState())
+    parents[self.getStartState()] = (-1,-1);
+    direction[self.getStartState()] = "null";
+    start_state = self.getStartState()
+   
+    # Creating the Maze files by using the BFS based search method
+    f = open('prolog_scripts/maze.P', 'w')
+    g = open('prolog_scripts/mazeastar.P', 'w')
+    g.write(":- op(400,yfx,'#').\n")
+    visited.add(self.getStartState());
+    i=0
+    #goal = 0
+    "This while loop keep iterating till the queue gets empty or the goal is reached"
+    while not state_queue.isEmpty():
+        curr_state = state_queue.pop()
+        children = self.getSuccessors(curr_state)
+        "This for loop iterates over the successor to put the elements in queue and stop once the goal is reached"
+        for child in children:
+            "print child, child[0]"
+            i = i+1
+            if child[0] not in visited:
+                state_queue.push(child[0])
+                heur = abs( child[0][0] - goal[0] ) + abs( child[0][1] - goal[1] )
+                #print "check"
+                #print curr_state, child[0], child[1], child[2], (curr_state[0]-1)*h + curr_state[1], (child[0][0]-1)*h + child[0][1]
+                if curr_state == start_state:
+                    f.write("connected(start, cell%d, %s).\n"% ((child[0][0]-1)*h + child[0][1], child[1].lower()))
+                    g.write("connected(start#cell%d#%s#%d#%d).\n"% ((child[0][0]-1)*h + child[0][1], child[1].lower(), heur, child[2]))
+                else:
+                    f.write("connected(cell%d, cell%d, %s).\n"% ((curr_state[0]-1)*h + curr_state[1], (child[0][0]-1)*h + child[0][1], child[1].lower()))
+                    g.write("connected(cell%d#cell%d#%s#%d#%d).\n"% ((curr_state[0]-1)*h + curr_state[1], (child[0][0]-1)*h + child[0][1], child[1].lower(), heur, child[2]))
+                #visited.add(child[0])
+                #parents[child[0]]=curr_state 
+                #direction[child[0]]=child[1]
+                #break;
+        visited.add(curr_state)
+    
+    #f.write("goal(cell%d,null).\n" % ((w-2)*h + 1))
+    f.write("goal(cell1,null).\n")
+    g.write("goal(cell1).\n")
+    #print "i=", i
 
   def getStartState(self):
     return self.startState

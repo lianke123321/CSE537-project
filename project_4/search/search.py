@@ -11,8 +11,7 @@ In search.py, you will implement generic search algorithms which are called
 by Pacman agents (in searchAgents.py).
 """
 
-import util
-
+import util 
 class SearchProblem:
   """
   This class outlines the structure of a search problem, but doesn't implement
@@ -82,13 +81,81 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  """
+  This function makes a generic implementation of DFS.Following variables are mainly used -
+  1. state_stack - It is the stack class imported from util class. It keeps track of the nodes to be expanded and pops the nodes depth first.
+  2. parents - It is used to backtrack the path of the node after it reaches the goal.
+  3. direction - This is also used to backtrack the path of the node once it reaches goal. It gives the exact direction to trace back.
+  4. visited - This keeps track of visited nodes so as to avoid a deadlock.
+  5. path - This is used to return the path to the main function
+  """
+  from game import Directions
+  from spade import pyxf
+  south = Directions.SOUTH
+  west = Directions.WEST
+  north = Directions.NORTH
+  east = Directions.EAST
+  
+  myXSB = pyxf.xsb("/home/adrian/Applications/XSB/bin/xsb")
+  myXSB.load("prolog_scripts/maze.P")
+  myXSB.load("prolog_scripts/dfs.P")
+  result1 = myXSB.query("dfs(start,[],P,D).")
+  #print result1
+  path = result1[0]['D']
+  #print path, len(path)
+  path2 = path[1:-6]
+  #print path2
+  import re
+  path3 = re.split(',',path2)
+  #print path3
+  path4 = [word[:1].upper() + word[1:] for word in path3]
+  #print path4
+  #print "Sending the path"
+  return path4
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
-      
+
+  """
+  This function makes a generic implementation of DFS.Following variables are mainly used -
+  1. state_queue - It is the queue class imported from util class. It keeps track of the nodes to be expanded and pops the nodes breadth first.
+  2. parents - It is used to backtrack the path of the node after it reaches the goal.
+  3. direction - This is also used to backtrack the path of the node once it reaches goal. It gives the exact direction to trace back.
+  4. visited - This keeps track of visited nodes so as to avoid a deadlock.
+  5. path - This is used to return the path to the main function
+  """
+  from game import Directions
+  from spade import pyxf
+  south = Directions.SOUTH
+  west = Directions.WEST
+  north = Directions.NORTH
+  east = Directions.EAST
+  
+  myXSB = pyxf.xsb("/home/adrian/Applications/XSB/bin/xsb")
+  myXSB.load("prolog_scripts/maze.P")
+  myXSB.load("prolog_scripts/bfs.P")
+  result1 = myXSB.query("solve(start,D).")
+  #print result1
+  #print result1[0]['D']
+  path = result1[0]['D']
+  #print path, len(path)
+  path2 = path[1:-7]
+  #print path2
+  import re
+  path3 = re.split(',',path2)
+  #print path3
+  path4 = [word[:1].upper() + word[1:] for word in path3]
+  #print path4
+  path5 = path4[1:][::2]
+  path6 = path5[::-1]
+  #print path5, path6
+  #print path[0]
+  #print "Sending the path"
+  return path6
+
+     
+
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
@@ -104,9 +171,46 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
-    
+  """
+  This function makes a generic implementation of UCS.Following variables are mainly used -
+  1. state_queue - It is the priority queue class imported from util class. It keeps track of the nodes to be expanded and pops the nodes in order of their priotiy.
+  2. parents - It is used to backtrack the path of the node after it reaches the goal.
+  3. direction - This is also used to backtrack the path of the node once it reaches goal. It gives the exact direction to trace back.
+  4. visited - This keeps track of visited nodes so as to avoid a deadlock.
+  5. cost - this keeps track of the cost of the nodes and adds them to the child if needed.
+  6. path - This is used to return the path to the main function
+  """
+  from game import Directions
+  from spade import pyxf
+  south = Directions.SOUTH
+  west = Directions.WEST
+  north = Directions.NORTH
+  east = Directions.EAST
   
+  myXSB = pyxf.xsb("/home/adrian/Applications/XSB/bin/xsb")
+  myXSB.load("prolog_scripts/mazeastar.P")
+  myXSB.load("prolog_scripts/astar.P")
+  #result = myXSB.query("connected(start#A#D#E#F).")
+  result1 = myXSB.query("solve(start, D).")
+  #print "Result is -"
+  #print result1
+  path = result1[0]['D']
+  path2 = path[1:-1]
+  import re
+  path3 = re.split(',',path2)
+  final_path = []
+  i=1
+  for it in path3:
+    temp = re.split('#',it.replace(" ",""))
+    final_path.append(temp[1])
+
+  del final_path[-1]
+  path4 = [word[:1].upper() + word[1:] for word in final_path]
+  path6 = path4[::-1]
+  #print "Sending the path"
+  return path6
+ 
+
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
