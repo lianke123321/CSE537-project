@@ -46,14 +46,9 @@ def main():
     
     dict_spam = dict()
     dict_ham = dict()
-    dict_all = dict()
+    
     for mail in mails:
         #print mail
-        for word in mail.words:
-            if word in dict_all:
-                dict_all[word] += 1
-            else:
-                dict_all[word] = 1
         
         if mail.type == 'spam':
             count_spam += 1
@@ -75,7 +70,7 @@ def main():
     #storing all generated variables into a pickle file
     with open('gen_values.pickle', 'w') as f:
         pickle.dump([count_spam, count_ham, count_all,\
-            dict_spam, dict_ham, dict_all], f)
+            dict_spam, dict_ham], f)
     
     print 'Finished learning process, exiting...'
 

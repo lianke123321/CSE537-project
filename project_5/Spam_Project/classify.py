@@ -8,7 +8,7 @@ Stony Brook University
 __author__ = 'Adrian'
 
 #from collections import defaultdict
-import sys, copy, time, pickle
+import sys, copy, time, pickle, math
 from guppy import hpy
 
 from my_lib import *
@@ -43,30 +43,59 @@ def main():
     # load processed data
     with open('gen_values.pickle') as f:
         count_spam, count_ham, count_all, dict_spam,\
-            dict_ham, dict_all = pickle.load(f)
+            dict_ham = pickle.load(f)
     
     p_spam = float(count_spam)/count_all
     p_ham = float(count_ham)/count_all
+    #print p_spam, p_ham
+    
+    correct_num = 0
     
     # catagorize each mail
     for mail in mails:
-        p_f_spam = 1.0
-        p_f_ham = 1.0
-        p_f_all = 1.0
+        # use logarithm here cause the actual number is too small
+        p_f_spam_log = 0
+        p_f_ham_log = 0
+        # p_f_all is not used since it's the common denominator
+        #p_f_all = 1.0
         
         for word in mail.words:
             if word in dict_spam:
-                p_f_spam = p_f_spam * (float(dict_spam[word]) / count_spam)
+            #if (word in dict_spam) and (word in dict_ham):
+                p_fi_spam_log = math.log(float(dict_spam[word]) / count_spam)
+            else:
+                #print 'Word {} is not in dict_spam!'.format(word)
+                # apply Laplace smoothing here
+                p_fi_spam_log = math.log(float(1) / (count_spam + 2))
+            
+            p_f_spam_log += p_fi_spam_log
+            
             if word in dict_ham:
-                p_f_ham = p_f_ham * (float(dict_ham[word]) / count_ham)
-            if word in dict_all:
-                p_f_all = p_f_all * (float(dict_all[word]) / count_all)
+                p_fi_ham_log = math.log(float(dict_ham[word]) / count_ham)
+                
+            else:
+                #print 'Word {} is not in dict_ham!'.format(word)
+                # apply Laplace smoothing here
+                p_fi_spam_log = math.log(float(1) / (count_ham + 2))
+            
+            p_f_ham_log += p_fi_ham_log
         
-        p_is_spam = p_spam * p_f_spam / p_f_all
-        p_is_ham = p_ham * p_f_ham / p_f_all
+        # whoever is greater, means a larger possibility
+        # the mail is spam/ham
+        p_is_spam_log = p_spam * p_f_spam_log
+        p_is_ham_log = p_ham * p_f_ham_log
         
-        print p_is_spam, p_is_ham
+        result = ''
+        if p_is_spam_log >= p_is_ham_log:
+            result = 'spam'
+        else:
+            result = 'ham'
+        
+        if result == mail.type:
+            #print 'Got it', result
+            correct_num += 1
     
-    #print p_spam, p_ham
+    p_correct = float(correct_num) / len(mails)
+    print 'Correctly identified {} mails. Accuracy: {}'.format(correct_num, p_correct)
 
 main()
