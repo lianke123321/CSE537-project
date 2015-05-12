@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # helper function for read in the data
 def readData(trainf, trainl, testf, testl, fname):
     '''

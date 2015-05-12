@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 from math import log
 from scipy import stats
 

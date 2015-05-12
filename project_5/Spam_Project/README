@@ -17,3 +17,7 @@ Three source files for spam project.
     algorithm. It will report how many mails have been identified correctly, and
     the accuracy.
     Usage: python classify.pu <test file path>
+
+Platform requirement:
+    Project is written and tested in linux using Python 2.7. No other special libraries
+    required

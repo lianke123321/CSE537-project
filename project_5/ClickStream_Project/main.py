@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # main file for test ID3 decision tree
 
 import ID3
