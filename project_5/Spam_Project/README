@@ -1,0 +1,19 @@
+Three source files for spam project.
+
+1. my_lib.py
+    This file is used as self-defined library, by the other two source files.
+    All the data should be placed at the same directory as this script.
+
+2. train.py
+    This file is for processing training data and generate some useful variables.
+    Execute this file before executing classify.py
+    Usage: python train.py <train file path>
+    In our case, <train file path> should be data/train
+    This file will generate a pickle file in the same directory, which is used by
+    classify.py for identifying mails.
+
+3. classify.py
+    This file contains code for classifying mails in test file using Naive Bayes
+    algorithm. It will report how many mails have been identified correctly, and
+    the accuracy.
+    Usage: python classify.pu <test file path>
