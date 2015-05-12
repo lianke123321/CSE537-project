@@ -36,14 +36,14 @@ def main():
         new_mail = Mail(elements[0], elements[1])
         
         for i in range (2, len(elements), 2):
-            new_mail.add_word(elements[i])
+            new_mail.add_word(elements[i], elements[i+1])
         
         mails.append(new_mail)
     
     # load processed data
     with open('gen_values.pickle') as f:
         count_spam, count_ham, count_all, dict_spam,\
-            dict_ham = pickle.load(f)
+            dict_ham, dict_all = pickle.load(f)
     
     p_spam = float(count_spam)/count_all
     p_ham = float(count_ham)/count_all
@@ -62,7 +62,9 @@ def main():
         for word in mail.words:
             if word in dict_spam:
             #if (word in dict_spam) and (word in dict_ham):
-                p_fi_spam_log = math.log(float(dict_spam[word]) / count_spam)
+                #p_fi_spam_log = math.log(float(mail.words[word])/dict_spam[word])
+                p_fi_spam_log = math.log(float(dict_spam[word]) / dict_all[word])
+                
             else:
                 #print 'Word {} is not in dict_spam!'.format(word)
                 # apply Laplace smoothing here
@@ -71,13 +73,14 @@ def main():
             p_f_spam_log += p_fi_spam_log
             
             if word in dict_ham:
-                p_fi_ham_log = math.log(float(dict_ham[word]) / count_ham)
+                #p_fi_ham_log = math.log(float(mail.words[word]) / dict_ham[word])
+                p_fi_ham_log = math.log(float(dict_ham[word]) / dict_all[word])
                 
             else:
                 #print 'Word {} is not in dict_ham!'.format(word)
                 # apply Laplace smoothing here
-                p_fi_spam_log = math.log(float(1) / (count_ham + 2))
-            
+                p_fi_ham_log = math.log(float(1) / (count_ham + 2))
+                
             p_f_ham_log += p_fi_ham_log
         
         # whoever is greater, means a larger possibility

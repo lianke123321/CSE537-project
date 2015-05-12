@@ -11,10 +11,10 @@ class Mail(object):
     def __init__(self, id, type):
         self.id = id
         self.type = type
-        self.words = []
+        self.words = {}
     
-    def add_word(self, word):
-        self.words.append(word)
+    def add_word(self, word, time):
+        self.words[word] = int(time)
     
     """
     def print_me(self):

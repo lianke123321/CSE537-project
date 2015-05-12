@@ -36,7 +36,9 @@ def main():
         new_mail = Mail(elements[0], elements[1])
         
         for i in range (2, len(elements), 2):
-            new_mail.add_word(elements[i])
+            new_mail.add_word(elements[i], elements[i+1])
+        
+        #print new_mail
         
         mails.append(new_mail)
     
@@ -46,31 +48,37 @@ def main():
     
     dict_spam = dict()
     dict_ham = dict()
+    dict_all = dict()
     
     for mail in mails:
         #print mail
+        for word in mail.words:
+            if word in dict_all:
+                dict_all[word] += mail.words[word]
+            else:
+                dict_all[word] = mail.words[word]
         
         if mail.type == 'spam':
             count_spam += 1
             for word in mail.words:
                 if word in dict_spam:
-                    dict_spam[word] += 1
+                    dict_spam[word] += mail.words[word]
                 else:
-                    dict_spam[word] = 1
+                    dict_spam[word] = mail.words[word]
         else:
             count_ham += 1
             for word in mail.words:
                 if word in dict_ham:
-                    dict_ham[word] += 1
+                    dict_ham[word] += mail.words[word]
                 else:
-                    dict_ham[word] = 1
+                    dict_ham[word] = mail.words[word]
     
     #print dict_spam
     #print dict_ham
     #storing all generated variables into a pickle file
     with open('gen_values.pickle', 'w') as f:
         pickle.dump([count_spam, count_ham, count_all,\
-            dict_spam, dict_ham], f)
+            dict_spam, dict_ham, dict_all], f)
     
     print 'Finished learning process, exiting...'
 
