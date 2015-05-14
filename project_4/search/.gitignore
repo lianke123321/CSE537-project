@@ -1,0 +1,4 @@
+*.pyc
+prolog_scripts/*.xwam
+prolog_scripts/maze.P
+prolog_scripts/mazeastar.P
